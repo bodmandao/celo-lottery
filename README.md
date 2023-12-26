@@ -284,7 +284,7 @@ The Celo Faucet is a tool that allows developers to obtain testnet CELO tokens f
 Congratulations! You have successfully deployed a decentralized on CELO blockchain. You can go ahead to interact with your contract.
 ![deployed](https://github.com/bodmandao/celo_decentralized_lottery/assets/154741685/8b2c461a-c6a6-48c5-b7df-f5c66b2d1fc0)
 
-### Conclusion:
+### Section 6: Conclusion:
 
 Therefore, developing a Decentralized Lottery on the CELO blockchain involves creating a Smart Contract using Solidity. The provided code implements a lottery system where participants can enter by contributing a minimum amount, and a manager can initiate and conclude rounds. The contract ensures transparency and fairness by leveraging blockchain's immutability and decentralization.
 The use of CELO blockchain provides advantages such as fast transaction times and lower fees, making the lottery accessible and efficient for participants. Overall, this decentralized lottery on CELO showcases the potential for blockchain technology to revolutionize traditional systems, offering a transparent and trustless platform for fair and secure lotteries.
