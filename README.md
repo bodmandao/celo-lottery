@@ -106,20 +106,51 @@ The `startNewRound` function is responsible for initiating a new lottery round. 
   ### 2.5.3 Ending the Current Round
   ```solidity
     function endRound() public restricted roundActive {
-        require(block.timestamp >= roundEndTime, "Round is still active");
-        // Pick a winner only if there are enough players
-        if (players.length > 0) {
-            uint256 index = random() % players.length;
-            lastWinner = players[index];
+    require(block.timestamp >= roundEndTime, "Round is still active");
 
-            // Emit winner event
-            emit LotteryWinner(lastWinner, address(this).balance);
+    // Pick a winner only if there are enough players
+    if (players.length > 0) {
+        uint256 index = random() % players.length;
+        lastWinner = players[index];
 
-            // Transfer the entire contract balance to the winner
-            payable(lastWinner).transfer(address(this).balance);
-        }
+        // Emit winner event
+        emit LotteryWinner(lastWinner, address(this).balance);
+
+        // Transfer funds to the winner using send with a check
+        (bool success, ) = payable(lastWinner).call{value: address(this).balance}("");
+        require(success, "Transfer to winner failed");
+    }
+
+    // Reset the players array and round status for the next round
+    players = new address[](0);
+    isRoundActive = false;
+}
+
   ```
-The `endRound` function is responsible for finalizing the current round, selecting a winner randomly, transferring the winnings to the winner, and resetting the players array and round status for the next round.
+The `endRound` function in the Lottery smart contract serves the purpose of concluding the current round, determining a winner, and handling fund transfers using the `send` method with the `revert` pattern. Here's an explanation of the key components:
+
+1. **Modifier Checks:**
+   - The function is decorated with the `restricted` and `roundActive` modifiers, ensuring that only the manager can call this function, and the current round is indeed active.
+
+2. **Checking Round Completion:**
+   - `require(block.timestamp >= roundEndTime, "Round is still active");` ensures that the round's designated time has elapsed before attempting to end the round. This is crucial for fairness and preventing premature round endings.
+
+3. **Selecting a Winner:**
+   - The function proceeds to select a winner if there are enough players in the lottery. It generates a random index based on the number of players and assigns the corresponding address as the `lastWinner`.
+
+4. **Emitting Winner Event:**
+   - `emit LotteryWinner(lastWinner, address(this).balance);` emits an event announcing the winner and the total balance of the contract at the time of the event.
+
+5. **Funds Transfer Using `send`:**
+   - `(bool success, ) = payable(lastWinner).call{value: address(this).balance}("");` attempts to transfer the entire contract balance to the winner using the `send` method. The success of the transfer is captured in the `success` variable.
+
+6. **Reverting on Transfer Failure:**
+   - `require(success, "Transfer to winner failed");` checks if the funds transfer was successful. If it fails, the contract reverts with an error message. This ensures that the contract's state remains unchanged in case of a transfer failure, preventing inconsistent states.
+
+7. **Resetting for the Next Round:**
+   - After handling the winner selection and fund transfer, the function resets the players array to an empty state and sets `isRoundActive` to `false`, preparing the contract for the next round.
+
+In summary, `endRound` function prioritizes security by using the `send` method and includes robust checks to handle potential failures during the fund transfer process. The `revert` pattern ensures that the contract state remains intact even in adverse scenarios, providing a more resilient and secure lottery implementation.
 
 ### 2.6 Checking Round Status and Participants
   ### 2.6.1 Getting Current Round Status
@@ -161,22 +192,26 @@ contract Lottery {
 
     event LotteryWinner(address winner, uint256 amount);
 
+    // Modifier to restrict access to only the manager
     modifier restricted() {
         require(msg.sender == manager, "Only the manager can call this function");
         _;
     }
 
+    // Modifier to ensure the current round is active
     modifier roundActive() {
         require(isRoundActive, "The current round is not active");
         _;
     }
 
+    // Constructor to set the manager and minimum players for a round
     constructor(uint256 _minimumPlayers) {
         manager = msg.sender;
         minimumPlayers = _minimumPlayers;
         isRoundActive = false;
     }
 
+    // Function for players to enter the lottery by contributing funds
     function enter() public payable {
         require(msg.value > 0.01 ether, "Minimum contribution is 0.01 ether");
         require(!isRoundActive, "Cannot enter while a round is active");
@@ -184,6 +219,7 @@ contract Lottery {
         players.push(msg.sender);
     }
 
+    // Function to start a new round, only accessible to the manager
     function startNewRound() public restricted {
         require(!isRoundActive, "A round is already active");
 
@@ -194,6 +230,7 @@ contract Lottery {
         isRoundActive = true;
     }
 
+    // Function to end the current round and determine a winner
     function endRound() public restricted roundActive {
         require(block.timestamp >= roundEndTime, "Round is still active");
 
@@ -205,8 +242,9 @@ contract Lottery {
             // Emit winner event
             emit LotteryWinner(lastWinner, address(this).balance);
 
-            // Transfer the entire contract balance to the winner
-            payable(lastWinner).transfer(address(this).balance);
+            // Transfer funds to the winner using send with a check
+            (bool success, ) = payable(lastWinner).call{value: address(this).balance}("");
+            require(success, "Transfer to winner failed");
         }
 
         // Reset the players array and round status for the next round
@@ -214,18 +252,22 @@ contract Lottery {
         isRoundActive = false;
     }
 
+    // Function to get the list of players
     function getPlayers() public view returns (address[] memory) {
         return players;
     }
 
+    // Function to get the current round status
     function getCurrentRoundStatus() public view returns (bool active, uint256 endTime) {
         return (isRoundActive, roundEndTime);
     }
 
+    // Function to generate a pseudo-random number based on block information and player addresses
     function random() private view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
     }
 }
+
 
 ```
 ### Section 4: Getting Celo faucet 
