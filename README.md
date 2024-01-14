@@ -253,6 +253,115 @@ Set `minimum player` and click on `deploy` button on remix after you have succes
 
 Congratulations! You have successfully deployed a decentralized on CELO blockchain. You can go ahead to interact with your contract.
 ![deployed](https://github.com/bodmandao/celo_decentralized_lottery/assets/154741685/8b2c461a-c6a6-48c5-b7df-f5c66b2d1fc0)
+Building a Decentralized Lottery on the CELO Blockchain: From Smart Contract Development to Deployment
+Table of Contents
+Section 1: Understanding the Basics
+1.1 Overview of Lottery Smart Contracts
 
+Section 2: Code Explanation of the Smart Contract
+2.1 Key Variables
+2.2 Event
+2.3 Modifiers
+2.4 Constructor
+2.5 Managing Rounds and Selecting Winners
+2.5.1 Entering a Round
+2.5.2 Starting a New Round
+2.5.3 Ending the Current Round
+2.6 Checking Round Status and Participants
+2.6.1 Getting Current Round Status
+2.6.2 Generating a Random Number
+2.6.3 Retrieving Players
+
+Section 3: Complete Code
+
+solidity
+Copy code
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Lottery {
+    address public manager;
+    address[] public players;
+    address public lastWinner;
+    uint256 public roundEndTime;
+    uint256 public minimumPlayers;
+    bool public isRoundActive;
+
+    event LotteryWinner(address winner, uint256 amount);
+
+    modifier restricted() {
+        require(msg.sender == manager, "Only the manager can call this function");
+        require(isRoundActive, "The current round is not active");
+        _;
+    }
+
+    constructor(uint256 _minimumPlayers) {
+        manager = msg.sender;
+        minimumPlayers = _minimumPlayers;
+        isRoundActive = false;
+    }
+
+    function enter() public payable {
+        require(msg.value > 0.01 ether, "Minimum contribution is 0.01 ether");
+        require(!isRoundActive, "Cannot enter while a round is active");
+        
+        players.push(msg.sender);
+    }
+
+    function startNewRound() public restricted {
+        require(players.length >= minimumPlayers, "Not enough players to start a round");
+        isRoundActive = true;
+        roundEndTime = block.timestamp + 24 * 3600; // Round lasts for 24 hours
+    }
+
+    function endRound() public restricted {
+        require(block.timestamp >= roundEndTime, "Round is still active");
+
+        if (players.length > 0) {
+            uint256 index = random() % players.length;
+            lastWinner = players[index];
+
+            emit LotteryWinner(lastWinner, address(this).balance);
+
+            payable(lastWinner).transfer(address(this).balance);
+        }
+
+        players = new address[](0);
+        isRoundActive = false;
+    }
+
+    function getPlayers() public view returns (address[] memory) {
+        return players;
+    }
+
+    function getCurrentRoundStatus() public view returns (bool active, uint256 endTime) {
+        return (isRoundActive, roundEndTime);
+    }
+
+    function random() private view returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
+    }
+}
+Section 4: Getting CELO from Faucet
+Visit Celo Faucet, paste your wallet address, and authenticate with Github to receive testnet CELO tokens.
+
+Section 5: Deployment to Remix
+
+Go to Remix.
+Create a new file named lottery.sol and paste the complete code.
+Compile the lottery contract.
+Configure the Celo Alfajores testnet on Metamask.
+Under the environment tab, select "Injected Provider" to connect to Metamask.
+Set the minimum player and click on the deploy button.
+Section 6: Conclusion
+
+6.1 Next Steps
+Test and debug your smart contract thoroughly.
+Develop a user interface for participants.
+Create comprehensive documentation.
+Consider a security audit for the smart contract.
+Engage with the community and gather feedback.
+Explore governance mechanisms.
+Integrate with other CELO ecosystem applications.
 
 
