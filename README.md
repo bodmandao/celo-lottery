@@ -1,9 +1,9 @@
 # Building a Decentralized Lottery on CELO Blockchain
 ## Building a Decentralized Lottery on the CELO Blockchain: From Smart Contract Development to Deployment
 
-Decentralized applications (DApps) have gained significant popularity in the blockchain space, offering transparency, security, and immutability. Smart contracts, self-executing contracts with coded terms, play a crucial role in powering DApps.
+The rise of blockchain technology has paved the way for innovative applications in various fields, including finance and entertainment. Among these are decentralized applications (DApps), offering transparent, secure, and trustless alternatives to traditional centralized systems. 
 
-This article guides you through the process of building and deploying a decentralized lottery smart contract on the CELO blockchain. CELO, a blockchain platform, facilitates fast and cost-effective transactions, making it an excellent choice for decentralized applications.
+This article delves into the fascinating world of DApps by guiding you through the development and deployment of a decentralized lottery smart contract on the CELO blockchain.
 
 ## Table of Contents
 
@@ -26,12 +26,14 @@ This article guides you through the process of building and deploying a decentra
 - [Section 4: Getting Celo faucet](#getting-celo-faucet)
 - [Section 5: Deployment to remix](#deployment-to-remix)
 - [Section 6: Conclusion](#section-6-conclusion)
-  - [5.1 Next Steps](#51-next-steps)
+- [Section 7: Next Steps](#section-7-next-steps)
 
 
 ## Section 1: Understanding the Basics
 
 ### 1.1 Overview of Lottery Smart Contracts
+Traditional lotteries often raise concerns about transparency, fairness, and trust in centralized authorities. In contrast, decentralized lotteries, powered by smart contracts on blockchains like CELO, offer a compelling solution. These contracts, self-executing agreements with codified terms, eliminate the need for intermediaries, ensuring verifiable randomness, tamper-proof record-keeping, and immutable transaction history. This fosters trust and confidence in the lottery system, creating a more engaging and secure experience for participants.
+
 Decentralized lottery smart contracts bring transparency and fairness to the process of organizing and participating in lotteries. This guide explores the fundamental concepts and components involved in building such a contract.
 
 ## Section 2: Code Explanation of the Smart Contract
@@ -45,6 +47,8 @@ Decentralized lottery smart contracts bring transparency and fairness to the pro
     uint256 public minimumPlayers;
     bool public isRoundActive;
 ```
+The journey begins with understanding the core components of the smart contract. Key variables manage essential aspects like the manager (contract creator), players, winners, round duration, minimum participation thresholds, and round status. Events act as notifications, signaling winner selection and prize distribution. Modifiers enforce access control and restrict certain functions to authorized users. The constructor initializes the contract, setting the manager, minimum players, and initial round status.
+
 These variables represent essential components of the lottery smart contract. The manager initiates the lottery, players contribute funds to participate, lastWinner keeps track of the previous winner, roundEndTime determines when a round ends, minimumPlayers sets the threshold for starting a new round, and isRoundActive indicates whether a round is currently active.
 
 ### 2.2 Event
@@ -78,6 +82,8 @@ The `restricted` modifier ensures that only the manager can call certain functio
 The constructor function initializes the decentralized lottery smart contract by setting the contract manager to the deployer's address (msg.sender), defining the minimum required players (_minimumPlayers), and initially marking the round as inactive (isRoundActive = false).
 
 ### 2.5 Managing Rounds and Selecting Winners
+The heart of the lottery lies in managing rounds and selecting winners. Players can contribute funds to enter a round, adhering to minimum contribution requirements and ensuring entries during active rounds are prohibited. The manager initiates new rounds, ensuring sufficient player participation before setting the round duration and marking it active. Round closure involves randomly selecting a winner (proportional to their contribution) and transferring the entire contract balance as the prize. Functions are further provided to retrieve player lists, check round status, and access end times
+
   ### 2.5.1 Entering a Round
   ```solidity
     function enter() public payable {
@@ -238,6 +244,8 @@ Paste your wallet address. You can authenticate with your Github to get 10x of t
 Click on faucet to get your token.
 
 ### Section 5: Deployment to remix
+To bring the smart contract to life, we leverage Celo Faucet to obtain testnet CELO tokens for development and testing on the CELO blockchain. By configuring your Metamask wallet for the Celo Alfajores testnet and connecting it to Remix IDE, you can compile and deploy the contract. Once deployed, you can interact with the contract functions, entering rounds, checking statuses, and witnessing the transparent execution of the lottery on the blockchain.
+
 Go to remix[]:https://remix.ethereum.org/
 
 Create a new file named `lottery.sol` and paste the complete the code.
@@ -254,5 +262,10 @@ Set `minimum player` and click on `deploy` button on remix after you have succes
 Congratulations! You have successfully deployed a decentralized on CELO blockchain. You can go ahead to interact with your contract.
 ![deployed](https://github.com/bodmandao/celo_decentralized_lottery/assets/154741685/8b2c461a-c6a6-48c5-b7df-f5c66b2d1fc0)
 
+### Section 6: Conclusion
 
+Decentralized lotteries on CELO represent a fascinating application of blockchain technology, offering transparency, fairness, and trust to the world of chance. By building and deploying your own smart contract, you gain a deeper understanding of DApp development and witness the power of blockchain in action. So, take the plunge, explore the code, and unleash your creativity to build a decentralized lottery that resonates with your community. Remember, the possibilities are boundless, and the future of entertainment lies in your hands (or rather, your smart contract!)
 
+### Section 7: Next Steps
+
+  While this guide provides a solid foundation for building a decentralized lottery, further enhancements can be explored. Integrating Chainlink VRF (Verifiable Random Function) can enhance randomness generation, eliminating potential biases. Implementing additional features like tiered prizes, bonus systems, or automated round transitions can add complexity and excitement to the game. The possibilities are endless, allowing you to customize your lottery DApp and cater to diverse player preferences.
