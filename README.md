@@ -8,8 +8,8 @@ This article delves into the fascinating world of DApps by guiding you through t
 ## Table of Contents
 
 - [Section 1: Understanding the Basics](#understanding-the-basics)
-  - [1.1 Overview of Lottery Smart Contracts](#overview-of-lottery-smart-contracts)
-- [Section 2: Code Explanation of the Smart Contract](#section-2-code-explanation-of-the-smart-contracts)
+  - [1.1 Overview of Lottery Smart Contracts](#11-overview-of-lottery-smart-contracts)
+- [Section 2: Code Explanation of the Smart Contract](#section2-code-explanation-of-the-smart-contracts)
   - [2.1 Key Variables](#21-key-variables)
   - [2.2 Event](#22-event)
   - [2.3 Modifiers](#23-modifiers)
