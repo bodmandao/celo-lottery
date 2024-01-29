@@ -125,7 +125,7 @@ The `startNewRound` function is responsible for initiating a new lottery round. 
             payable(lastWinner).transfer(address(this).balance);
         }
   ```
-The `endRound` function is responsible for finalizing the current round, selecting a winner randomly, transferring the winnings to the winner, and resetting the players array and round status for the next round.
+The `endRound` function is responsible for finalizing the current round, selecting a winner randomly, transferring the winnings to the winner, and resetting the player's array and round status for the next round.
 
 ### 2.6 Checking Round Status and Participants
   ### 2.6.1 Getting Current Round Status
@@ -134,7 +134,7 @@ The `endRound` function is responsible for finalizing the current round, selecti
         return (isRoundActive, roundEndTime);
     }
    ```
-This function query the contract and obtain information about the current round's status and end time.
+This function queries the contract and obtains information about the current round's status and end time.
 
   ### 2.6.2 Generating a Random Number
 ```solidity
@@ -235,20 +235,20 @@ contract Lottery {
 
 ```
 ### Section 4: Getting Celo faucet 
-The Celo Faucet is a tool that allows developers to obtain testnet CELO tokens for development and testing purposes on CELO blockchain.
+The Celo Faucet is a tool that allows developers to obtain testnet CELO tokens for development and testing purposes on the CELO blockchain.
 
 Visit Celo Faucet: [celo faucet]:https://faucet.celo.org/alfajores
 Paste your wallet address. You can authenticate with your Github to get 10x of the token.
 ![celoFaucet](https://github.com/bodmandao/celo_decentralized_lottery/assets/154741685/d0ac677e-e78c-4c89-a888-6f06a6ebce2d)
 
-Click on faucet to get your token.
+Click on the faucet to get your token.
 
 ### Section 5: Deployment to remix
-To bring the smart contract to life, we leverage Celo Faucet to obtain testnet CELO tokens for development and testing on the CELO blockchain. By configuring your Metamask wallet for the Celo Alfajores testnet and connecting it to Remix IDE, you can compile and deploy the contract. Once deployed, you can interact with the contract functions, entering rounds, checking statuses, and witnessing the transparent execution of the lottery on the blockchain.
+To bring the smart contract to life, we leverage Celo Faucet to obtain testnet CELO tokens for development and testing on the CELO blockchain. By configuring your Metamask wallet for the Celo Alfajores testnet and connecting it to Remix IDE, you can compile and deploy the contract. Once deployed, you can interact with the contract functions, enter rounds, check statuses, and witness the transparent execution of the lottery on the blockchain.
 
 Go to remix[]:https://remix.ethereum.org/
 
-Create a new file named `lottery.sol` and paste the complete the code.
+Create a new file named `lottery.sol` and paste the complete code.
 ![remix](https://github.com/bodmandao/celo_decentralized_lottery/assets/154741685/2168e375-cdbb-4f3d-b3d8-aff239b9d148)
 
 Compile the lottery contract.
@@ -259,12 +259,12 @@ Under the `environment` tab, select `injected provider` to connect to metamask o
 
 Set `minimum player` and click on `deploy` button on remix after you have successfully connected your wallet.
 
-Congratulations! You have successfully deployed a decentralized on CELO blockchain. You can go ahead to interact with your contract.
+Congratulations! You have successfully deployed a decentralized lottery on the CELO blockchain. You can go ahead to interact with your contract.
 ![deployed](https://github.com/bodmandao/celo_decentralized_lottery/assets/154741685/8b2c461a-c6a6-48c5-b7df-f5c66b2d1fc0)
 
 ### Section 6: Conclusion
 
-Decentralized lotteries on CELO represent a fascinating application of blockchain technology, offering transparency, fairness, and trust to the world of chance. By building and deploying your own smart contract, you gain a deeper understanding of DApp development and witness the power of blockchain in action. So, take the plunge, explore the code, and unleash your creativity to build a decentralized lottery that resonates with your community. Remember, the possibilities are boundless, and the future of entertainment lies in your hands (or rather, your smart contract!)
+Decentralized lotteries on CELO represent a fascinating application of blockchain technology, offering transparency, fairness, and trust to the world of chance. By building and deploying your smart contract, you gain a deeper understanding of DApp development and witness the power of blockchain in action. So, take the plunge, explore the code, and unleash your creativity to build a decentralized lottery that resonates with your community. Remember, the possibilities are boundless, and the future of entertainment lies in your hands (or rather, your smart contract!)
 
 ### Section 7: Next Steps
 
