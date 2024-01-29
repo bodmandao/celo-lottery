@@ -29,7 +29,7 @@ This article delves into the fascinating world of DApps by guiding you through t
 - [Section 7: Next Steps](#section-7-next-steps)
 
 
-## Section 1: Understanding the Basics
+### Section 1: Understanding the Basics
 
 ### 1.1 Overview of Lottery Smart Contracts
 Traditional lotteries often raise concerns about transparency, fairness, and trust in centralized authorities. In contrast, decentralized lotteries, powered by smart contracts on blockchains like CELO, offer a compelling solution. These contracts, self-executing agreements with codified terms, eliminate the need for intermediaries, ensuring verifiable randomness, tamper-proof record-keeping, and immutable transaction history. This fosters trust and confidence in the lottery system, creating a more engaging and secure experience for participants.
