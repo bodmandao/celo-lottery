@@ -7,9 +7,9 @@ This article delves into the fascinating world of DApps by guiding you through t
 
 ## Table of Contents
 
-- [Section 1: Understanding the Basics](#understanding-the-basics)
+- [Section 1: Understanding the Basics](#section1-understanding-the-basics)
   - [1.1 Overview of Lottery Smart Contracts](#11-overview-of-lottery-smart-contracts)
-- [Section 2: Code Explanation of the Smart Contract](#section2-code-explanation-of-the-smart-contracts)
+- [Section 2: Code Explanation of the Smart Contract](#section2-code-explanation-of-the-smart-contract)
   - [2.1 Key Variables](#21-key-variables)
   - [2.2 Event](#22-event)
   - [2.3 Modifiers](#23-modifiers)
@@ -22,9 +22,9 @@ This article delves into the fascinating world of DApps by guiding you through t
     - [2.6.1 Getting Current Round Status](#261-getting-current-round-status)
     - [2.6.2 Generating a Random Number](#262-generating-a-random-number)
     - [2.6.3 Retrieving Players](#263-retrieving-players)
-- [Section 3: Complete Code](#complete-code)
-- [Section 4: Getting Celo faucet](#getting-celo-faucet)
-- [Section 5: Deployment to remix](#deployment-to-remix)
+- [Section 3: Complete Code](#section3-complete-code)
+- [Section 4: Getting Celo faucet](#section4-getting-celo-faucet)
+- [Section 5: Deployment to remix](#section-5-deployment-to-remix)
 - [Section 6: Conclusion](#section-6-conclusion)
 - [Section 7: Next Steps](#section-7-next-steps)
 
