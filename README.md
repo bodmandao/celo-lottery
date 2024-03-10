@@ -93,7 +93,8 @@ The heart of the lottery lies in managing rounds and selecting winners. Players 
         players.push(msg.sender);
     }
   ```
-The enter function allows players to participate in the lottery by contributing funds. It imposes a minimum contribution requirement and ensures that entries are not allowed during an active round.
+The `enter` function allows participants to join the lottery by sending a payment of at least 0.01 ether. It ensures that participants cannot enter if a round is currently active.
+If the conditions are met, the participant's address is added to the list of players.
 
   ### 2.5.2 Starting a New Round
   ```solidity   
@@ -107,7 +108,7 @@ The enter function allows players to participate in the lottery by contributing 
         isRoundActive = true;
     }
   ```
-The `startNewRound` function is responsible for initiating a new lottery round. It resets the round-related variables, sets a new round end time, and marks the round as active.
+The `startNewRound` function is accessible to the contract manager and is used to initiate a new round of the lottery. It ensures that no active round is currently in progress and that there are enough players to start a new round. If these conditions are met, it sets the end time for the new round and marks it as active.
 
   ### 2.5.3 Ending the Current Round
   ```solidity
@@ -125,7 +126,8 @@ The `startNewRound` function is responsible for initiating a new lottery round. 
             payable(lastWinner).transfer(address(this).balance);
         }
   ```
-The `endRound` function is responsible for finalizing the current round, selecting a winner randomly, transferring the winnings to the winner, and resetting the player's array and round status for the next round.
+The `endRound` function is responsible for finalizing the current round, selecting a winner randomly,
+transferring the winnings to the winner, and resetting the player's array and round status for the next round.
 
 ### 2.6 Checking Round Status and Participants
   ### 2.6.1 Getting Current Round Status
@@ -134,7 +136,7 @@ The `endRound` function is responsible for finalizing the current round, selecti
         return (isRoundActive, roundEndTime);
     }
    ```
-This function queries the contract and obtains information about the current round's status and end time.
+The `getCurrentRoundStatus` function retrieves and returns two pieces of information about the current lottery round: whether the round is active (`active`), represented as a boolean value, and the end time of the round (`endTime`), represented as a `uint256` timestamp. This function is publicly accessible and does not modify the contract's state; it simply provides a view of the current round's status.
 
   ### 2.6.2 Generating a Random Number
 ```solidity
@@ -142,15 +144,15 @@ function random() private view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
     }
   ```
-  This function is a private view function designed to generate a pseudo-random number.
-  
+ The `random` function generates a pseudo-random `uint256` number based on the blockchain's `block.difficulty`, `block.timestamp`, and the array of `players`. It combines these factors using `abi.encodePacked` and hashes them with `keccak256` to produce a unique output, providing randomness for lottery-related operations within the contract.
+ 
   ### 2.6.3 Retrieving Players
   ```solidity
   function getPlayers() public view returns (address[] memory) {
         return players;
     }
   ```
- This function retrieves the array of participant addresses (players) in the current lottery round.
+The `getPlayers` function is a publicly accessible view function in the contract. It returns the array of player addresses (`players`) participating in the lottery as its output. This function does not modify the contract's state; it simply provides a view of the current list of players.
  
 ### Section 3: Complete Code
 ```solidity
