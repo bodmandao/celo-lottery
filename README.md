@@ -187,7 +187,7 @@ transferring the winnings to the winner, and resetting the player's array and ro
 ## Explanation
 
 - `require(block.timestamp >= roundEndTime, "Round is still active");` : This line ensures that the current block timestamp (`block.timestamp`) is greater than or equal to the end time of the round (`roundEndTime`). If the round is still active, it reverts the transaction with an error message.
-- `if (players.length > 0) ` : This line checks if there are any players participating in the current round. If there are no players, the round concludes without picking a winner.
+- `if (players.length > 0) ` : This line checks if any players are participating in the current round. If there are no players, the round concludes without picking a winner.
 - `uint256 index = random() % players.length;` : This line generates a random index within the range of the `players` array to select a winner. The `%` operator calculates the remainder of the division, ensuring the index is within the array bounds.
 - `lastWinner = players[index];` : This line assigns the address of the selected winner to the lastWinner variable.
 - `emit LotteryWinner(lastWinner, address(this).balance);` : This line emits an event `LotteryWinner`, indicating the address of the winner and the current balance of the lottery contract.
@@ -281,7 +281,7 @@ contract Lottery {
             payable(lastWinner).transfer(address(this).balance);
         }
 
-        // Reset the players array and round status for the next round
+        // Reset the players' array and round status for the next round
         players = new address[](0);
         isRoundActive = false;
     }
