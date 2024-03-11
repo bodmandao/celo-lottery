@@ -49,12 +49,45 @@ Decentralized lottery smart contracts bring transparency and fairness to the pro
 ```
 The journey begins with understanding the core components of the smart contract. Key variables manage essential aspects like the manager (contract creator), players, winners, round duration, minimum participation thresholds, and round status. Events act as notifications, signaling winner selection and prize distribution. Modifiers enforce access control and restrict certain functions to authorized users. The constructor initializes the contract, setting the manager, minimum players, and initial round status.
 
+1. **`address public manager`**: 
+   - Stores the address of the manager or administrator of the lottery contract.
+   - Declared as `public`.
+   - Participants are added to this array when they call the `enter` function to join the lottery.
+
+2. **`address[] public players`**: 
+   - An array that stores the addresses of all the participants who have entered the lottery.
+   - Declared as `public`.
+   - Participants are added to this array when they call the `enter` function to join the lottery.
+
+3. **`address public lastWinner`**: 
+   - Stores the address of the last winner of the lottery.
+   - Declared as `public`.
+
+4. **`uint256 public roundEndTime`**: 
+   - Stores the timestamp indicating when the current round of the lottery will end.
+   - Declared as `public`.
+
+5. **`uint256 public minimumPlayers`**: 
+   - Stores the minimum number of players required to start a new round of the lottery.
+   - Declared as `public`.
+
+6. **`bool public isRoundActive`**: 
+   - A boolean flag that indicates whether a round of the lottery is currently active or not.
+   - Declared as `public`.
+
 These variables represent essential components of the lottery smart contract. The manager initiates the lottery, players contribute funds to participate, lastWinner keeps track of the previous winner, roundEndTime determines when a round ends, minimumPlayers sets the threshold for starting a new round, and isRoundActive indicates whether a round is currently active.
 
 ### 2.2 Event
 ```solidity
 event LotteryWinner(address winner, uint256 amount);
 ```
+
+This event is emitted when a winner is selected at the end of a lottery round.
+
+- **Parameters**:
+  - `winner` (address): The address of the winner.
+  - `amount` (uint256): The amount of funds won by the winner.
+
 When this event is emitted within the smart contract, it records the winner's address and the corresponding prize amount. This logged information can be observed by external applications or user interfaces, enabling them to track and display details about lottery winners and prize amounts on the blockchain.
 
 ### 2.3 Modifiers
@@ -69,6 +102,7 @@ When this event is emitted within the smart contract, it records the winner's ad
         _;
     }
 ```
+
 The `restricted` modifier ensures that only the manager can call certain functions, providing access control. The `roundActive` modifier checks whether the current round is active before allowing certain operations.
 
 ### 2.4 Constructor
@@ -79,6 +113,14 @@ The `restricted` modifier ensures that only the manager can call certain functio
         isRoundActive = false;
     }
 ```
+- **Parameters**:
+  - `_minimumPlayers` (uint256): The minimum number of players required to start a new round.
+
+- **Actions**:
+  - Sets the `manager` to the address of the contract deployer (`msg.sender`).
+  - Initializes the `minimumPlayers` variable with the provided `_minimumPlayers` value.
+  - Sets the `isRoundActive` flag to `false`, indicating that no round is currently active.
+
 The constructor function initializes the decentralized lottery smart contract by setting the contract manager to the deployer's address (msg.sender), defining the minimum required players (_minimumPlayers), and initially marking the round as inactive (isRoundActive = false).
 
 ### 2.5 Managing Rounds and Selecting Winners
@@ -96,6 +138,11 @@ The heart of the lottery lies in managing rounds and selecting winners. Players 
 The `enter` function allows participants to join the lottery by sending a payment of at least 0.01 ether. It ensures that participants cannot enter if a round is currently active.
 If the conditions are met, the participant's address is added to the list of players.
 
+## Explanation
+ - `require(msg.value > 0.01 ether, "Minimum contribution is 0.01 ether")` : This line ensures that the value sent with the transaction (msg.value) is greater than 0.01 ether. If not, it reverts the transaction with an error message indicating the minimum contribution requirement.
+- `require(!isRoundActive, "Cannot enter while a round is active");` : This line ensures that there is no active round (`isRoundActive` is false) before allowing entry. If a round is active, it reverts the transaction with an error message.
+- `players.push(msg.sender);` : This line adds the sender's address (msg.sender) to the players array, indicating their participation in the lottery.
+
   ### 2.5.2 Starting a New Round
   ```solidity   
     function startNewRound() public restricted {
@@ -109,6 +156,14 @@ If the conditions are met, the participant's address is added to the list of pla
     }
   ```
 The `startNewRound` function is accessible to the contract manager and is used to initiate a new round of the lottery. It ensures that no active round is currently in progress and that there are enough players to start a new round. If these conditions are met, it sets the end time for the new round and marks it as active.
+
+## Explanation
+
+- `require(!isRoundActive, "A round is already active");` : This line ensures that there is no active round (`isRoundActive` is false) before initiating a new round. If a round is already active, it reverts the transaction with an error message.
+- `require(players.length >= minimumPlayers, "Not enough players to start a round");` : This line ensures that there are enough players (players.length) to start a new round. It checks if the number of players is greater than or equal to the minimum required players (minimumPlayers). If not, it reverts the transaction with an error message.
+- `roundEndTime = block.timestamp + 24 hours; // Round lasts for 24 hours` : This line sets the end time for the new round by adding 24 hours to the current block timestamp (`block.timestamp`). The round is set to last for 24 hours.
+- `isRoundActive = true;` : This line sets the isRoundActive flag to true, indicating that a new round is now active.
+  
 
   ### 2.5.3 Ending the Current Round
   ```solidity
@@ -129,6 +184,15 @@ The `startNewRound` function is accessible to the contract manager and is used t
 The `endRound` function is responsible for finalizing the current round, selecting a winner randomly,
 transferring the winnings to the winner, and resetting the player's array and round status for the next round.
 
+## Explanation
+
+- `require(block.timestamp >= roundEndTime, "Round is still active");` : This line ensures that the current block timestamp (`block.timestamp`) is greater than or equal to the end time of the round (`roundEndTime`). If the round is still active, it reverts the transaction with an error message.
+- `if (players.length > 0) ` : This line checks if there are any players participating in the current round. If there are no players, the round concludes without picking a winner.
+- `uint256 index = random() % players.length;` : This line generates a random index within the range of the `players` array to select a winner. The `%` operator calculates the remainder of the division, ensuring the index is within the array bounds.
+- `lastWinner = players[index];` : This line assigns the address of the selected winner to the lastWinner variable.
+- `emit LotteryWinner(lastWinner, address(this).balance);` : This line emits an event `LotteryWinner`, indicating the address of the winner and the current balance of the lottery contract.
+- `payable(lastWinner).transfer(address(this).balance);` : This line transfers the entire contract balance to the winner by sending it to the lastWinner address.
+
 ### 2.6 Checking Round Status and Participants
   ### 2.6.1 Getting Current Round Status
   ```solidity
@@ -136,7 +200,7 @@ transferring the winnings to the winner, and resetting the player's array and ro
         return (isRoundActive, roundEndTime);
     }
    ```
-The `getCurrentRoundStatus` function retrieves and returns two pieces of information about the current lottery round: whether the round is active (`active`), represented as a boolean value, and the end time of the round (`endTime`), represented as a `uint256` timestamp. This function is publicly accessible and does not modify the contract's state; it simply provides a view of the current round's status.
+The `getCurrentRoundStatus` function retrieves and returns two pieces of information about the current lottery round: whether the round is active (`active`), represented as a boolean value, and the end time of the round (`endTime`), represented as a `uint256` timestamp. This function is publicly accessible and does not modify the contract's state; it simply provides a view of the current round's status. Anyone can call this function to retrieve the status of the current round in the lottery contract. It provides information about whether the round is active and when it will end.
 
   ### 2.6.2 Generating a Random Number
 ```solidity
@@ -144,7 +208,7 @@ function random() private view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
     }
   ```
- The `random` function generates a pseudo-random `uint256` number based on the blockchain's `block.difficulty`, `block.timestamp`, and the array of `players`. It combines these factors using `abi.encodePacked` and hashes them with `keccak256` to produce a unique output, providing randomness for lottery-related operations within the contract.
+ The `random` function generates a pseudo-random `uint256` number based on the blockchain's `block.difficulty`, `block.timestamp`, and the array of `players`. It combines these factors using `abi.encodePacked` and hashes them with `keccak256` to produce a unique output, providing randomness for lottery-related operations within the contract. It is used internally to generate randomness for various purposes within the lottery contract, such as selecting winners or determining outcomes.
  
   ### 2.6.3 Retrieving Players
   ```solidity
@@ -152,7 +216,7 @@ function random() private view returns (uint256) {
         return players;
     }
   ```
-The `getPlayers` function is a publicly accessible view function in the contract. It returns the array of player addresses (`players`) participating in the lottery as its output. This function does not modify the contract's state; it simply provides a view of the current list of players.
+The `getPlayers` function is a publicly accessible view function in the contract. It returns the array of player addresses (`players`) participating in the lottery as its output. This function does not modify the contract's state; it simply provides a view of the current list of players. Anyone can call this function to retrieve the list of players currently participating in the lottery contract. It provides transparency and visibility into the current participants.
  
 ### Section 3: Complete Code
 ```solidity
